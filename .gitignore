@@ -122,6 +122,7 @@ dist/
 downloads/
 eggs/
 .eggs/
+valorantcompetitivebot.egg-info/
 lib/
 lib64/
 parts/
