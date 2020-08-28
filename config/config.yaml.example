@@ -1,11 +1,13 @@
 reddit:
   username: "USERNAME"
   password: "PASSWORD"
-  client_token: "TOKEN"
+  client_id: "TOKEN"
   client_secret: "CLIENT_SECRET"
+  subreddit: "SUBREDDIT"
 
 discord:
   token: "TOKEN"
+  # TODO(jsteel): There are for sticky, maybe extract these to a sticky sub obj
   allowed_roles:
     - ROLE1
     - ROLE2

@@ -9,6 +9,7 @@ import yaml
 @dataclass
 class BotConfig:
     discord_config: DiscordConfig
+    reddit_config: RedditConfig
 
     @staticmethod
     def parse_from_file(file_location: str) -> BotConfig:
@@ -19,7 +20,8 @@ class BotConfig:
     @staticmethod
     def parse_from(config: dict) -> BotConfig:
         return BotConfig(
-            discord_config=DiscordConfig.parse_from(config["discord"])
+            discord_config=DiscordConfig.parse_from(config["discord"]),
+            reddit_config=RedditConfig.parse_from(config["reddit"])
         )
 
 
@@ -30,9 +32,29 @@ class DiscordConfig:
     allowed_servers: List[str]
 
     @staticmethod
-    def parse_from(discord_config: dict) -> DiscordConfig:
+    def parse_from(config: dict) -> DiscordConfig:
         return DiscordConfig(
-            token=discord_config["token"],
-            allowed_roles=discord_config["allowed_roles"],
-            allowed_servers=discord_config["allowed_servers"]
+            token=config["token"],
+            allowed_roles=config["allowed_roles"],
+            allowed_servers=config["allowed_servers"]
+        )
+
+
+@dataclass
+class RedditConfig:
+    username: str
+    password: str
+    client_id: str
+    client_secret: str
+
+    subreddit: str
+
+    @staticmethod
+    def parse_from(config: dict) -> RedditConfig:
+        return RedditConfig(
+            username=config["username"],
+            password=config["password"],
+            client_id=config["client_id"],
+            client_secret=config["client_secret"],
+            subreddit=config["subreddit"]
         )
