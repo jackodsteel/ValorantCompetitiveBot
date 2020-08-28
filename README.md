@@ -17,9 +17,13 @@ Create a venv
 pip install -e .
 ```
 
+## Config
+
+Copy the `config/config.yaml.example` file to `config/config.yaml` and then input the fields as required.
+
 ## Running
 
-TODO(jsteel): Fill this in once able.
+Running with Python 3, simply run `python valorantcompetitivebot/main.py`
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

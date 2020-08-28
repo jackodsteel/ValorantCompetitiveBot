@@ -1,0 +1,14 @@
+reddit:
+  username: "USERNAME"
+  password: "PASSWORD"
+  client_token: "TOKEN"
+  client_secret: "CLIENT_SECRET"
+
+discord:
+  token: "TOKEN"
+  allowed_roles:
+    - ROLE1
+    - ROLE2
+  allowed_servers:
+    - SERVER1
+    - SERVER2
