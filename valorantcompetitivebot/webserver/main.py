@@ -1,7 +1,7 @@
 from aiohttp import web
 
 
-async def main():
+async def start():
     app = web.Application()
     runner = web.AppRunner(app)
     await runner.setup()

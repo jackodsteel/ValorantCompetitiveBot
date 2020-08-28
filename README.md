@@ -12,6 +12,11 @@ The aim of this bot is to make it reusable for any subreddit with similar requir
 pip install -r requirements.txt
 ```
 
+Create a venv
+```bash
+pip install -e .
+```
+
 ## Running
 
 TODO(jsteel): Fill this in once able.
