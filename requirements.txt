@@ -10,4 +10,5 @@ idna==2.10
 multidict==4.7.6
 PyYAML==5.3.1
 typing-extensions==3.7.4.3
+-e git+https://github.com/jackodsteel/ValorantCompetitiveBot.git@c52b35ef10afe7a80af64ee0a9bc299a109a5cae#egg=valorantcompetitivebot
 yarl==1.5.1
