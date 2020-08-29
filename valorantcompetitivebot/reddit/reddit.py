@@ -1,8 +1,9 @@
 import asyncpraw
 import asyncpraw.exceptions
+import asyncprawcore.exceptions
 
 from valorantcompetitivebot.config.config import RedditConfig
-from valorantcompetitivebot.error.errors import BotError
+from valorantcompetitivebot.error.errors import BotError, handle_unexpected_exceptions
 
 
 class Reddit:
@@ -25,31 +26,25 @@ class Reddit:
                              password=self.config.password)
         return r
 
+    @handle_unexpected_exceptions
     async def sticky_post(self, post_url):
         submission = await self._get_post_from_url(post_url)
         # TODO(jsteel): Do we want to ensure only certain users posts can be stickied?
-        try:
-            await submission.mod.sticky(state=True, bottom=True)
-        except Exception as e:
-            raise InternalServerError from e
+        await submission.mod.sticky(state=True, bottom=True)
 
+    @handle_unexpected_exceptions
     async def unsticky_post(self, post_url):
         submission = await self._get_post_from_url(post_url)
         # TODO(jsteel): Do we want to ensure only certain users posts can be un-stickied?
-        try:
-            await submission.mod.sticky(state=False)
-        except Exception as e:
-            raise InternalServerError from e
+        await submission.mod.sticky(state=False)
 
     async def _get_post_from_url(self, post_url: str) -> asyncpraw.reddit.Submission:
         try:
             submission = await self._r.submission(url=post_url)
         except asyncpraw.exceptions.ClientException as e:
             raise RedditError(f"Something went wrong:\n{e}")
-        except Exception as e:
-            # TODO(jsteel): properly log
-            print(f"{type(e)}: {e}")
-            raise InternalServerError from e
+        except asyncprawcore.exceptions.NotFound:
+            raise PostNotFoundError
         if submission.subreddit.display_name.lower() != self.config.subreddit.lower():
             raise IncorrectSubredditError(submission.subreddit.display_name)
         return submission
@@ -61,7 +56,7 @@ class RedditError(BotError):
 
 class PostNotFoundError(RedditError):
     def __init__(self):
-        super().__init__("That post could not be found")
+        super().__init__("That post could not be found :(")
 
 
 class IncorrectSubredditError(RedditError):
@@ -72,11 +67,3 @@ class IncorrectSubredditError(RedditError):
 class UnauthorizedUserError(RedditError):
     def __init__(self, username):
         super().__init__(f"Posts from /u/{username} cannot be stickied!")
-
-
-class InternalServerError(RedditError):
-    """Should raise this from the causing error."""
-
-    def __init__(self):
-        # TODO(jsteel): "Maintainer of this bot" should be configurable?
-        super().__init__("Oops! Something went wrong :( Either try again or contact the maintainer of this bot")
