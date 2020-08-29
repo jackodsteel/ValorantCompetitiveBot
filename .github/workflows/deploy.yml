@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Copy config.yaml from secret
-        run: 'echo $BOT_CONFIG > config/config.yaml'
+        run: 'echo "$BOT_CONFIG" > config/config.yaml'
         shell: bash
         env:
           BOT_CONFIG: ${{ secrets.BOT_CONFIG }}
