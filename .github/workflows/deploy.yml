@@ -14,6 +14,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Copy config.yaml from secret
+        run: 'echo BOT_CONFIG > config/config.yaml'
+        shell: bash
+        env:
+          BOT_CONFIG: ${{ secrets.BOT_CONFIG }}
+
       # Setup and configure gcloud CLI
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
@@ -23,5 +29,4 @@ jobs:
 
       # Deploy App to App Engine
       - name: Deploy
-        run: |
-          gcloud app deploy --quiet
+        run: 'gcloud app deploy --quiet'
