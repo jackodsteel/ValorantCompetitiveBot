@@ -28,8 +28,8 @@ class BotCog(commands.Cog):
     @commands.command()
     async def sticky(self, context: commands.Context, *args: str):
         try:
-            post_url = self.get_url(*args)
             self.validate_permissions(context.author)
+            post_url = self.get_url(*args)
             await self._reddit.sticky_post(post_url)
         except BotError as e:
             return await context.send(e.user_message)
@@ -38,8 +38,8 @@ class BotCog(commands.Cog):
     @commands.command()
     async def unsticky(self, context: commands.Context, *args: str):
         try:
-            post_url = self.get_url(*args)
             self.validate_permissions(context.author)
+            post_url = self.get_url(*args)
             await self._reddit.unsticky_post(post_url)
         except BotError as e:
             return await context.send(e.user_message)
@@ -48,11 +48,11 @@ class BotCog(commands.Cog):
     @commands.command()
     async def sort(self, context: commands.Context, *args: str):
         try:
+            self.validate_permissions(context.author)
             if len(args) <= 1:
                 raise DiscordError("Must provide the sort type and link")
             if len(args) > 2:
                 raise DiscordError("Only sort type and link expected!")
-            self.validate_permissions(context.author)
             await self._reddit.set_suggested_sort(args[0], args[1])
         except BotError as e:
             return await context.send(e.user_message)
@@ -67,8 +67,9 @@ class BotCog(commands.Cog):
         return args[0]
 
     def validate_permissions(self, author: discord.Member):
-        role_names = map(lambda role: role.name, author.roles)
+        role_names = set(map(lambda role: role.name, author.roles))
         if self._allowed_roles.isdisjoint(role_names):
+            print(f"{author.display_name} tried to use a command but only has roles:\n{role_names}")
             raise DiscordError("You don't have permission to do that!")
 
 

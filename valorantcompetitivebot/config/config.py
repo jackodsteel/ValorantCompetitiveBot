@@ -29,14 +29,12 @@ class BotConfig:
 class DiscordConfig:
     token: str
     allowed_roles: List[str]
-    allowed_servers: List[str]
 
     @staticmethod
     def parse_from(config: dict) -> DiscordConfig:
         return DiscordConfig(
             token=config["token"],
-            allowed_roles=config["allowed_roles"],
-            allowed_servers=config["allowed_servers"]
+            allowed_roles=config["allowed_roles"]
         )
 
 
