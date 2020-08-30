@@ -29,6 +29,8 @@ class Reddit:
     @handle_unexpected_exceptions
     async def sticky_post(self, post_url):
         submission = await self._get_post_from_url(post_url)
+        if await self._subreddit_has_two_stickies():
+            raise TooManyStickiesError
         # TODO(jsteel): Do we want to ensure only certain users posts can be stickied?
         await submission.mod.sticky(state=True, bottom=True)
 
@@ -37,6 +39,12 @@ class Reddit:
         submission = await self._get_post_from_url(post_url)
         # TODO(jsteel): Do we want to ensure only certain users posts can be un-stickied?
         await submission.mod.sticky(state=False)
+
+    async def _subreddit_has_two_stickies(self):
+        try:
+            return (await self._r.subreddit(self.config.subreddit).sticky(2)) is not None
+        except asyncprawcore.exceptions.NotFound:
+            return False
 
     async def _get_post_from_url(self, post_url: str) -> asyncpraw.reddit.Submission:
         try:
@@ -57,6 +65,11 @@ class RedditError(BotError):
 class PostNotFoundError(RedditError):
     def __init__(self):
         super().__init__("That post could not be found :(")
+
+
+class TooManyStickiesError(RedditError):
+    def __init__(self):
+        super().__init__("There are already two stickies! Remove one with `!unsticky` then try again")
 
 
 class IncorrectSubredditError(RedditError):
