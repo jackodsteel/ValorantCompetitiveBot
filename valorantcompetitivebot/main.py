@@ -21,11 +21,16 @@ def register_tasks(loop: asyncio.AbstractEventLoop, config: BotConfig, reddit: R
     loop.create_task(discord.start(config.discord_config, reddit))
 
 
-if __name__ == '__main__':
-    _config = load_config()
-    _reddit = load_reddit(_config.reddit_config)
+def main():
+    config = load_config()
+    reddit = load_reddit(config.reddit_config)
+    loop = asyncio.get_event_loop()
+    try:
+        register_tasks(loop, config, reddit)
+        loop.run_forever()
+    finally:
+        loop.close()
 
-    _loop = asyncio.get_event_loop()
-    register_tasks(_loop, _config, _reddit)
-    _loop.run_forever()
-    _loop.close()
+
+if __name__ == '__main__':
+    main()
