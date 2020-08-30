@@ -42,7 +42,8 @@ class Reddit:
 
     async def _subreddit_has_two_stickies(self):
         try:
-            return (await self._r.subreddit(self.config.subreddit).sticky(2)) is not None
+            subreddit = await self._r.subreddit(self.config.subreddit)
+            return await subreddit.sticky(2) is not None
         except asyncprawcore.exceptions.NotFound:
             return False
 
