@@ -6,6 +6,9 @@ from valorantcompetitivebot.config.config import RedditConfig
 from valorantcompetitivebot.error.errors import BotError, handle_unexpected_exceptions
 
 
+ALLOWED_SORT_TYPES = ("confidence", "top", "new", "controversial", "old", "random", "qa", "blank")
+
+
 class Reddit:
     """
     Wraps the praw Reddit instance with appropriate helper methods to perform required actions.
@@ -27,7 +30,7 @@ class Reddit:
         return r
 
     @handle_unexpected_exceptions
-    async def sticky_post(self, post_url):
+    async def sticky_post(self, post_url: str):
         submission = await self._get_post_from_url(post_url)
         if await self._subreddit_has_two_stickies():
             raise TooManyStickiesError
@@ -35,10 +38,17 @@ class Reddit:
         await submission.mod.sticky(state=True, bottom=True)
 
     @handle_unexpected_exceptions
-    async def unsticky_post(self, post_url):
+    async def unsticky_post(self, post_url: str):
         submission = await self._get_post_from_url(post_url)
         # TODO(jsteel): Do we want to ensure only certain users posts can be un-stickied?
         await submission.mod.sticky(state=False)
+
+    @handle_unexpected_exceptions
+    async def set_suggested_sort(self, sort: str, post_url: str):
+        if sort not in ALLOWED_SORT_TYPES:
+            raise InvalidSortError
+        submission = await self._get_post_from_url(post_url)
+        await submission.mod.suggested_sort(sort)
 
     async def _subreddit_has_two_stickies(self):
         try:
@@ -81,3 +91,8 @@ class IncorrectSubredditError(RedditError):
 class UnauthorizedUserError(RedditError):
     def __init__(self, username):
         super().__init__(f"Posts from /u/{username} cannot be stickied!")
+
+
+class InvalidSortError(RedditError):
+    def __init__(self):
+        super().__init__(f"Not a valid sort type, must be one of:\n{ALLOWED_SORT_TYPES}")

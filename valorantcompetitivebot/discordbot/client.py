@@ -45,6 +45,19 @@ class BotCog(commands.Cog):
             return await context.send(e.user_message)
         return await context.send("Done :)")
 
+    @commands.command()
+    async def sort(self, context: commands.Context, *args: str):
+        try:
+            if len(args) <= 1:
+                raise DiscordError("Must provide the sort type and link")
+            if len(args) > 2:
+                raise DiscordError("Only sort type and link expected!")
+            self.validate_permissions(context.author)
+            await self._reddit.set_suggested_sort(args[0], args[1])
+        except BotError as e:
+            return await context.send(e.user_message)
+        return await context.send("Done :)")
+
     @staticmethod
     def get_url(*args: str) -> str:
         if len(args) == 0:
