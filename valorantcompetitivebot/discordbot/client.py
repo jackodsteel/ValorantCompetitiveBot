@@ -19,8 +19,14 @@ class BotCog(commands.Cog):
         self._config = config
         self._allowed_roles = set(config.allowed_roles)
 
+    @commands.Cog.listener()
+    async def on_command_error(self, _, error):
+        if isinstance(error, commands.CommandNotFound):
+            return
+        raise error
+
     @commands.command()
-    async def sticky2(self, context: commands.Context, *args: str):
+    async def sticky(self, context: commands.Context, *args: str):
         try:
             post_url = self.get_url(*args)
             self.validate_permissions(context.author)
@@ -30,7 +36,7 @@ class BotCog(commands.Cog):
         return await context.send("Done :)")
 
     @commands.command()
-    async def unsticky2(self, context: commands.Context, *args: str):
+    async def unsticky(self, context: commands.Context, *args: str):
         try:
             post_url = self.get_url(*args)
             self.validate_permissions(context.author)
