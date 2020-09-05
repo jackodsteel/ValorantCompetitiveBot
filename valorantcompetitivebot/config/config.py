@@ -10,7 +10,7 @@ import yaml
 class BotConfig:
     discord_config: DiscordConfig
     reddit_config: RedditConfig
-    sidebar_config: SidebarConfig
+    sidebar_config: Optional[SidebarConfig]
 
     @staticmethod
     def parse_from_file(file_location: str) -> BotConfig:
@@ -23,7 +23,7 @@ class BotConfig:
         return BotConfig(
             discord_config=DiscordConfig.parse_from(config["discord"]),
             reddit_config=RedditConfig.parse_from(config["reddit"]),
-            sidebar_config=SidebarConfig.parse_from(config["sidebar"]),
+            sidebar_config=SidebarConfig.parse_from(config["sidebar"]) if "sidebar" in config else None,
         )
 
 
