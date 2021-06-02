@@ -12,6 +12,6 @@ multidict==4.7.6
 PyYAML==5.3.1
 requests==2.24.0
 typing-extensions==3.7.4.3
-urllib3==1.25.10
+urllib3==1.26.5
 git+git://github.com/jackodsteel/ValorantCompetitiveBot@master#egg=valorantcompetitivebot
 yarl==1.5.1
